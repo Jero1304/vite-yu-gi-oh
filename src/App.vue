@@ -4,8 +4,8 @@ import AppMain from './components/AppMain.vue';
 </script>
 
 <template>
-  <AppMain/>
   <AppHeader/>
+  <AppMain/>
 </template>
 
 <style lang="scss">
