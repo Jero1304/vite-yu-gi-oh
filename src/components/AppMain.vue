@@ -1,8 +1,11 @@
 <template>
     <main class="main-content">
         <div class="container">
+            <Filters @onSearch="onSearchFn"/>
+        </div>
+        <div class="container">
             <ul class="grid">
-                <li class="character" v-for="character in characters" :key="character.id">
+                <li class="character" v-for="character in store.characters" :key="character.id">
                     
                     <img :src="character.card_images[0].image_url_cropped" alt="">
                     <h3 class="name">{{ character.name }}</h3>
@@ -15,21 +18,38 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'
+import store from '../store'
+import Filters from './Filters.vue'
 export default{
+    components:{
+        Filters,
+    },
     data(){
         return{
-            characters:[]
+            store,
         }
     },
     methods:{
         fetchCharacters(){
+            const search = this.store.search
+            console.log('search:', search);
+
             console.log('fetch');
-            axios.get('https://db.ygoprodeck.com/api/v7/cardinfo.php?num=20&offset=0')
+            axios.get(`https://db.ygoprodeck.com/api/v7/cardinfo.php?num=20&offset=0&fname=${search}`)
             .then((res)=>{
                 console.log(res.data.data);
-                this.characters = res.data.data;
+                console.log(store);
+                this.store.characters = res.data.data;
+            }).catch((error)=>{
+                this.store.characters=[];
+                console.log(this.store.characters);
             })
+
+        },
+        onSearchFn(){
+            console.log('on search function');
+            this.fetchCharacters()
 
         }
     },
